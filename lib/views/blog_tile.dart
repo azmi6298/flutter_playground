@@ -28,9 +28,16 @@ class _BlogTileState extends State<BlogTile> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(7),
-                    child: CachedNetworkImage(imageUrl: widget.imageUrl)),
+                  CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: MediaQuery.of(context).size.width, 
+                      height: MediaQuery.of(context).size.height/5, 
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7),
+                        image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                      )
+                  ),),
                   SizedBox(height:10),
                   Text(widget.title, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
                   Text(widget.desc, style: TextStyle(color: Colors.black45),)

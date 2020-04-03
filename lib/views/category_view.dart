@@ -5,8 +5,8 @@ import 'base_app_bar.dart';
 import 'blog_tile.dart' as blogTile;
 
 class CategoryView extends StatefulWidget {
-  final String categoryName;
-  CategoryView({this.categoryName});
+  final String categoryName, countryCode;
+  CategoryView({this.categoryName, this.countryCode});
 
   @override
   _CategoryViewState createState() => _CategoryViewState();
@@ -24,7 +24,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   getArticles() async{
     CategoryNews newsClass = new CategoryNews();
-    await newsClass.getNews(widget.categoryName);
+    await newsClass.getNews(widget.categoryName, widget.countryCode);
     articles = newsClass.articles;
     setState(() {
       _loading = false;
