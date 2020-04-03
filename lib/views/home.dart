@@ -5,6 +5,7 @@ import 'package:newsapp/helper/data.dart';
 import 'package:newsapp/helper/news.dart';
 import 'package:newsapp/models/article_model.dart';
 import 'package:newsapp/models/category_model.dart';
+import 'package:newsapp/models/country_model.dart';
 import 'package:newsapp/views/base_app_bar.dart';
 import 'package:newsapp/views/category_view.dart';
 import 'package:newsapp/views/blog_tile.dart' as blogTile;
@@ -17,7 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = new List<CategoryModel>();
   List<ArticleModel> articles = new List<ArticleModel>();
-  List countries = new List();
+  List<CountryModel> countries = new List<CountryModel>();
 
   bool _loading = true;
   String countryCode = 'id';
@@ -39,16 +40,56 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _onFlagPressed(){
+    showModalBottomSheet(context: context, builder: (context){
+      return Container(
+        color: Color(0xFF737373),
+        height: 150*countries.length.toDouble(),
+        child: Container(
+          child: _countryMenu(),
+          decoration: BoxDecoration(
+            color: Theme.of(context).canvasColor,
+            borderRadius: BorderRadius.only(
+              topLeft : const Radius.circular(10),
+              topRight : const Radius.circular(10),
+            )
+          ),
+        ),
+      );
+    });
+  }
+
+  ListView _countryMenu(){
+    return ListView.builder(
+      itemCount: countries.length,
+      itemBuilder: (context, index){
+        return ListTile(
+          leading: Flags.getMiniFlag(countries[index].countryCode, null, null),
+          title: Text(countries[index].countryName),
+          onTap: () => _selectCountry(countries[index].countryCode.toLowerCase()),
+        );
+      }
+    );
+  }
+
+  void _selectCountry(countryCode){
+    Navigator.pop(context);
+    setState(() {
+      this.countryCode = countryCode;
+      getArticles();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BaseAppBar(appBar: AppBar(), 
       widgets: <Widget>[
         GestureDetector(
-          onTap: (){},
+          onTap: () => _onFlagPressed(),
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Flags.getMiniFlag('id', null, null),
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Flags.getMiniFlag('ID', null, null),
           ),
         )
       ],),
@@ -74,6 +115,7 @@ class _HomeState extends State<Home> {
                       return CategoryTile(
                         categoryName: categories[index].categoryName,
                         imageUrl: categories[index].imageUrl,
+                        countryCode: this.countryCode,
                       );
                     },
                   )
@@ -103,8 +145,8 @@ class _HomeState extends State<Home> {
 }
 
 class CategoryTile extends StatelessWidget {
-  final String categoryName, imageUrl;
-  CategoryTile({this.categoryName, this.imageUrl});
+  final String categoryName, imageUrl, countryCode;
+  CategoryTile({this.categoryName, this.imageUrl, this.countryCode});
 
   @override
   Widget build(BuildContext context) { 
@@ -112,7 +154,8 @@ class CategoryTile extends StatelessWidget {
       onTap: (){
         Navigator.push(context, MaterialPageRoute(
           builder: (context) => CategoryView(
-            categoryName: categoryName.toLowerCase()
+            categoryName: categoryName.toLowerCase(),
+            countryCode: this.countryCode,
           )
         ));
       },
@@ -120,9 +163,16 @@ class CategoryTile extends StatelessWidget {
         margin: EdgeInsets.only(right: 10),
         child: Stack(
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(7),
-              child: CachedNetworkImage(imageUrl: imageUrl, width: 120, height: 60, fit: BoxFit.cover,)),
+            CachedNetworkImage(
+              imageUrl: imageUrl,
+              imageBuilder: (context, imageProvider) => Container(
+                width: 120, 
+                height: 60, 
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(7),
+                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                )
+            ),),
             Container(
               alignment: Alignment.center,
               width: 120,

@@ -1,10 +1,20 @@
 import 'package:newsapp/models/category_model.dart';
+import 'package:newsapp/models/country_model.dart';
 
-List getCountries(){
-  List countries = new List();
-  countries.add('id');
-  countries.add('us');
+List<CountryModel> getCountries(){
+  List<CountryModel> countries = new List<CountryModel>();
 
+  CountryModel countryData = new CountryModel();
+
+  countryData.countryCode = 'ID';
+  countryData.countryName = 'Indonesia';
+  countries.add(countryData);
+
+  countryData = new CountryModel();
+
+  countryData.countryCode = 'US';
+  countryData.countryName = 'United States';
+  countries.add(countryData);
   return countries;
 }
 
