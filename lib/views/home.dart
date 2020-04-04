@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flag/flag.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/helper/data.dart';
 import 'package:newsapp/helper/news.dart';
@@ -22,6 +23,7 @@ class _HomeState extends State<Home> {
 
   bool _loading = true;
   String countryCode = 'id';
+  String countryName;
 
   @override
   void initState() { 
@@ -40,11 +42,26 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void showFlushBar(BuildContext context){
+    Flushbar(
+      title: 'News source changed to',
+      message: countryName,
+      padding: EdgeInsets.all(15),
+      margin: EdgeInsets.all(15),
+      borderRadius: 8,
+      backgroundGradient: LinearGradient(colors: [Colors.blue.shade600, Colors.blue.shade300], stops: [0.6, 1]),
+      boxShadows: [BoxShadow(color: Colors.black45, offset: Offset(3,3), blurRadius: 3)],
+      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
+      duration: Duration(seconds: 3),
+    )..show(context);
+  }
+
   void _onFlagPressed(){
     showModalBottomSheet(context: context, builder: (context){
       return Container(
         color: Color(0xFF737373),
-        height: 150*countries.length.toDouble(),
+        // height: 150*countries.length.toDouble(),
+        height: MediaQuery.of(context).size.height/4,
         child: Container(
           child: _countryMenu(),
           decoration: BoxDecoration(
@@ -66,17 +83,19 @@ class _HomeState extends State<Home> {
         return ListTile(
           leading: Flags.getMiniFlag(countries[index].countryCode, null, null),
           title: Text(countries[index].countryName),
-          onTap: () => _selectCountry(countries[index].countryCode.toLowerCase()),
+          onTap: () => _selectCountry(countries[index].countryCode.toLowerCase(), countries[index].countryName),
         );
       }
     );
   }
 
-  void _selectCountry(countryCode){
+  void _selectCountry(countryCode, countryName){
     Navigator.pop(context);
     setState(() {
       this.countryCode = countryCode;
+      this.countryName = countryName;
       getArticles();
+      showFlushBar(context);
     });
   }
 
@@ -89,7 +108,7 @@ class _HomeState extends State<Home> {
           onTap: () => _onFlagPressed(),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Flags.getMiniFlag('ID', null, null),
+            child: Flags.getMiniFlag(countryCode.toUpperCase(), null, null),
           ),
         )
       ],),
