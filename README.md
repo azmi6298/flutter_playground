@@ -1,6 +1,6 @@
 # Simple News App Exploration
 
-Simple news app build on Flutter with data from NewsAPI.
+Simple news app built on Flutter with data from NewsAPI.
 
 ## Changelog
 
