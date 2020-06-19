@@ -4,11 +4,11 @@ Simple news app built on Flutter with data from NewsAPI.
 
 ## Changelog
 
-**3 April 2020**
+**03-04-2020**
 * Replace ClipRRect widget with CachedNetworkImage to show bordered image
 * Select news from specific country from Bottom Modal
 
-**4 April 2020**
+**04-04-2020**
 * Lock portrait orientation
 * Set statusbar color to white
 * Resize bottom modal bar to depends of MediaQuery height
